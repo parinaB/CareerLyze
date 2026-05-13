@@ -1,421 +1,261 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AlertTriangle,
-  Download,
-  Edit,
-  Loader2,
-  Monitor,
-  Save,
-} from "lucide-react";
-import { toast } from "sonner";
-import MDEditor from "@uiw/react-md-editor";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { saveResume } from "@/actions/resume";
-import useFetch from "@/hooks/use-fetch";
-import { useUser } from "@clerk/nextjs";
-import { entriesToMarkdown } from "@/app/lib/helper";
-import { resumeSchema } from "@/app/lib/schema";
-import html2pdf from "html2pdf.js/dist/html2pdf.min.js";
-import { EntryFormWork } from "./entry-form-work";
-import { EntryFormEducation } from "./entry-form-education";
-import { EntryFormProject } from "./entry-form-project";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
+  Download, 
+  Share2, 
+  ArrowLeft,
+  Sparkles,
+  Zap,
+  CheckCircle2,
+  Bell
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ResumeBuilder({ initialContent }) {
-  const [activeTab, setActiveTab] = useState("edit");
-  const [previewContent, setPreviewContent] = useState(initialContent);
-  const { user } = useUser();
-  const [resumeMode, setResumeMode] = useState("preview");
-
-  const {
-    control,
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(resumeSchema),
-    defaultValues: {
-      contactInfo: {},
-      summary: "",
-      skills: "",
-      experience: [],
-      education: [],
-      projects: [],
-    },
-  });
-
-  const {
-    loading: isSaving,
-    fn: saveResumeFn,
-    data: saveResult,
-    error: saveError,
-  } = useFetch(saveResume);
-
-  // Watch form fields for preview updates
-  const formValues = watch();
-
-  useEffect(() => {
-    if (initialContent) setActiveTab("preview");
-  }, [initialContent]);
-
-  // Update preview content when form values change
-  useEffect(() => {
-    if (activeTab === "edit") {
-      const newContent = getCombinedContent();
-      setPreviewContent(newContent ? newContent : initialContent);
-    }
-  }, [formValues, activeTab]);
-
-  // Handle save result
-  useEffect(() => {
-    if (saveResult && !isSaving) {
-      toast.success("Resume saved successfully!");
-    }
-    if (saveError) {
-      toast.error(saveError.message || "Failed to save resume");
-    }
-  }, [saveResult, saveError, isSaving]);
-
-  const getContactMarkdown = () => {
-    const { contactInfo } = formValues;
-    const parts = [];
-    if (contactInfo.email) parts.push(`📧 ${contactInfo.email}`);
-    if (contactInfo.mobile) parts.push(`📱 ${contactInfo.mobile}`);
-    if (contactInfo.linkedin)
-      parts.push(`💼 [LinkedIn](${contactInfo.linkedin})`);
-    if (contactInfo.twitter) parts.push(`🐦 [Twitter](${contactInfo.twitter})`);
-
-    return parts.length > 0
-      ? `## <div align="center">${user.fullName}</div>
-        \n\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`
-      : "";
-  };
-
-  const getCombinedContent = () => {
-    const { summary, skills, experience, education, projects } = formValues;
-    return [
-      getContactMarkdown(),
-      summary && `## Professional Summary\n\n${summary}`,
-      skills && `## Skills\n\n${skills}`,
-      entriesToMarkdown(experience, "Work Experience"),
-      entriesToMarkdown(education, "Education"),
-      entriesToMarkdown(projects, "Projects"),
-    ]
-      .filter(Boolean)
-      .join("\n\n");
-  };
-
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const generatePDF = async () => {
-    setIsGenerating(true);
-    try {
-      const element = document.getElementById("resume-pdf");
-      const opt = {
-        margin: [15, 15],
-        filename: "resume.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
-
-      await html2pdf().set(opt).from(element).save();
-    } catch (error) {
-      console.error("PDF generation error:", error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      const formattedContent = previewContent
-        .replace(/\n/g, "\n") // Normalize newlines
-        .replace(/\n\s*\n/g, "\n\n") // Normalize multiple newlines to double newlines
-        .trim();
-
-      console.log(previewContent, formattedContent);
-      await saveResumeFn(previewContent);
-    } catch (error) {
-      console.error("Save error:", error);
-    }
-  };
+  const [tone, setTone] = useState("Executive");
 
   return (
-    <div data-color-mode="light" className="space-y-4">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-2">
-        <h1 className="font-bold gradient-title text-5xl md:text-6xl">
-          Resume Builder
-        </h1>
-        <div className="space-x-2">
-          <Button
-            variant="destructive"
-            onClick={handleSubmit(onSubmit)}
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4" />
-                Save
-              </>
-            )}
+    <div className="flex flex-col h-full space-y-4 pb-10">
+      
+      {/* Header Bar */}
+      <div className="flex items-center justify-between mb-4 mt-2">
+        <div className="flex items-center gap-3 text-primary-foreground">
+          <Link href="/dashboard" className="p-2 hover:bg-secondary/50 rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="text-xl font-serif">Resume Preview & Export</h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary-foreground">
+            <Bell className="w-5 h-5" />
           </Button>
-          <Button onClick={generatePDF} disabled={isGenerating}>
-            {isGenerating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating PDF...
-              </>
-            ) : (
-              <>
-                <Download className="h-4 w-4" />
-                Download PDF
-              </>
-            )}
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary-foreground">
+            <Zap className="w-5 h-5" />
           </Button>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-purple-400 border-2 border-primary/20 overflow-hidden">
+             {/* Avatar Placeholder */}
+          </div>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="edit">Form</TabsTrigger>
-          <TabsTrigger value="preview">Markdown</TabsTrigger>
-        </TabsList>
+      <div className="flex flex-col xl:flex-row gap-8">
+        
+        {/* Main Document Preview - Center */}
+        <div className="flex-1 flex justify-center">
+          <div className="w-full max-w-[800px] bg-white rounded-md shadow-2xl p-10 text-slate-800 min-h-[1056px] relative">
+            
+            {/* Header */}
+            <div className="flex justify-between items-start border-b border-slate-200 pb-6 mb-6">
+              <div>
+                <h1 className="text-4xl font-serif text-slate-900 tracking-tight font-bold mb-1">ALEXANDER VANCE</h1>
+                <p className="text-slate-500 text-sm font-medium tracking-wide">SENIOR PRODUCT STRATEGIST & AI INTEGRATION LEAD</p>
+              </div>
+              <div className="text-right text-xs text-slate-500 space-y-1">
+                <p>alexander.vance@email.com</p>
+                <p>+1 (555) 012-3456</p>
+                <p>San Francisco, CA</p>
+              </div>
+            </div>
 
-        <TabsContent value="edit">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Contact Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Email</label>
-                  <Input
-                    {...register("contactInfo.email")}
-                    type="email"
-                    placeholder="your@email.com"
-                    error={errors.contactInfo?.email}
-                  />
-                  {errors.contactInfo?.email && (
-                    <p className="text-sm text-red-500">
-                      {errors.contactInfo.email.message}
-                    </p>
-                  )}
+            {/* Professional Summary */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-sm font-bold tracking-widest text-slate-900 uppercase">Professional Summary</h2>
+                <Badge variant="secondary" className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 border-cyan-200 text-[10px] py-0 h-5">
+                  <Sparkles className="w-3 h-3 mr-1" /> ai-optimized for faang
+                </Badge>
+              </div>
+              <p className="text-sm leading-relaxed text-slate-700">
+                Strategic leader with 10+ years of experience scaling AI-driven consumer products.
+                Proven track record in orchestrating cross-functional teams to deliver high-impact
+                features that increased user retention by 42% at Global Tech Corp. Expert in LLM
+                orchestration and ethical AI deployment.
+              </p>
+            </div>
+
+            {/* Experience */}
+            <div className="mb-6">
+              <h2 className="text-sm font-bold tracking-widest text-slate-900 uppercase mb-4">Professional Experience</h2>
+              
+              <div className="mb-5">
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <h3 className="font-bold text-slate-900">Principal Product Manager</h3>
+                    <p className="text-sm text-slate-500 italic">Nexus Dynamics • 2020 — Present</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-cyan-50 text-cyan-700 border-cyan-200 text-[10px] py-0 h-5">
+                    <TrendingUp className="w-3 h-3 mr-1" /> high impact score
+                  </Badge>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Mobile Number</label>
-                  <Input
-                    {...register("contactInfo.mobile")}
-                    type="tel"
-                    placeholder="+1 234 567 8900"
-                  />
-                  {errors.contactInfo?.mobile && (
-                    <p className="text-sm text-red-500">
-                      {errors.contactInfo.mobile.message}
-                    </p>
-                  )}
+                <ul className="list-disc list-outside ml-4 mt-2 space-y-1.5 text-sm text-slate-700">
+                  <li>Led the digital transformation of 4 flagship products, resulting in a $12M ARR increase within 18 months.</li>
+                  <li>Spearheaded the integration of generative AI workflows into customer support, reducing response times by 65%.</li>
+                  <li>Managed a distributed team of 25+ engineers, designers, and data scientists across 3 continents.</li>
+                </ul>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <h3 className="font-bold text-slate-900">Senior Strategy Consultant</h3>
+                    <p className="text-sm text-slate-500 italic">Arcane Analytics • 2016 — 2020</p>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">LinkedIn URL</label>
-                  <Input
-                    {...register("contactInfo.linkedin")}
-                    type="url"
-                    placeholder="https://linkedin.com/in/your-profile"
-                  />
-                  {errors.contactInfo?.linkedin && (
-                    <p className="text-sm text-red-500">
-                      {errors.contactInfo.linkedin.message}
-                    </p>
-                  )}
+                <ul className="list-disc list-outside ml-4 mt-2 space-y-1.5 text-sm text-slate-700">
+                  <li>Designed market entry strategies for 12 Fortune 500 clients in the emerging technology sector.</li>
+                  <li>Published 3 whitepapers on the economic impact of machine learning in supply chain logistics.</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom Section: Expertise & Education */}
+            <div className="grid grid-cols-2 gap-8">
+              <div>
+                <h2 className="text-sm font-bold tracking-widest text-slate-900 uppercase mb-3">Expertise</h2>
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded">PRODUCT VISION</span>
+                  <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded">LLM ARCHITECTURE</span>
+                  <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded">AGILE/SCRUM</span>
                 </div>
+              </div>
+              <div>
+                <h2 className="text-sm font-bold tracking-widest text-slate-900 uppercase mb-3">Education</h2>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    Twitter/X Profile
-                  </label>
-                  <Input
-                    {...register("contactInfo.twitter")}
-                    type="url"
-                    placeholder="https://twitter.com/your-handle"
-                  />
-                  {errors.contactInfo?.twitter && (
-                    <p className="text-sm text-red-500">
-                      {errors.contactInfo.twitter.message}
-                    </p>
-                  )}
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">MBA, Stanford University</h3>
+                    <p className="text-xs text-slate-500">B.S. Computer Science, MIT</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Summary */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Professional Summary</h3>
-              <Controller
-                name="summary"
-                control={control}
-                render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    className="h-32"
-                    placeholder="Write a compelling professional summary..."
-                    error={errors.summary}
-                  />
-                )}
-              />
-              {errors.summary && (
-                <p className="text-sm text-red-500">{errors.summary.message}</p>
-              )}
+            {/* Watermark/Verified Seal */}
+            <div className="absolute bottom-10 right-10 opacity-10">
+              <CheckCircle2 className="w-24 h-24 text-slate-400" />
             </div>
 
-            {/* Skills */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Skills</h3>
-              <Controller
-                name="skills"
-                control={control}
-                render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    className="h-32"
-                    placeholder="List your key skills..."
-                    error={errors.skills}
-                  />
-                )}
-              />
-              {errors.skills && (
-                <p className="text-sm text-red-500">{errors.skills.message}</p>
-              )}
-            </div>
-
-            {/* Experience */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Work Experience</h3>
-              <Controller
-                name="experience"
-                control={control}
-                render={({ field }) => (
-                  <EntryFormWork
-                    type="Experience"
-                    entries={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.experience && (
-                <p className="text-sm text-red-500">
-                  {errors.experience.message}
-                </p>
-              )}
-            </div>
-
-            {/* Education */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Education</h3>
-              <Controller
-                name="education"
-                control={control}
-                render={({ field }) => (
-                  <EntryFormEducation
-                    type="Education"
-                    entries={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.education && (
-                <p className="text-sm text-red-500">
-                  {errors.education.message}
-                </p>
-              )}
-            </div>
-
-            {/* Projects */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Projects</h3>
-              <Controller
-                name="projects"
-                control={control}
-                render={({ field }) => (
-                  <EntryFormProject
-                    type="Project"
-                    entries={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.projects && (
-                <p className="text-sm text-red-500">
-                  {errors.projects.message}
-                </p>
-              )}
-            </div>
-          </form>
-        </TabsContent>
-
-        <TabsContent value="preview">
-          {activeTab === "preview" && (
-            <Button
-              variant="link"
-              type="button"
-              className="mb-2"
-              onClick={() =>
-                setResumeMode(resumeMode === "preview" ? "edit" : "preview")
-              }
-            >
-              {resumeMode === "preview" ? (
-                <>
-                  <Edit className="h-4 w-4" />
-                  Edit Resume
-                </>
-              ) : (
-                <>
-                  <Monitor className="h-4 w-4" />
-                  Show Preview
-                </>
-              )}
-            </Button>
-          )}
-
-          {activeTab === "preview" && resumeMode !== "preview" && (
-            <div className="flex p-3 gap-2 items-center border-2 border-yellow-600 text-yellow-600 rounded mb-2">
-              <AlertTriangle className="h-5 w-5" />
-              <span className="text-sm">
-                You will lose editied markdown if you update the form data.
-              </span>
-            </div>
-          )}
-          <div className="border rounded-lg">
-            <MDEditor
-              value={previewContent}
-              onChange={setPreviewContent}
-              height={800}
-              preview={resumeMode}
-            />
           </div>
-          <div className="hidden">
-            <div id="resume-pdf">
-              <MDEditor.Markdown
-                source={previewContent}
-                style={{
-                  background: "white",
-                  color: "black",
-                }}
-              />
+        </div>
+
+        {/* Right Sidebar - Refinement Panel */}
+        <div className="w-full xl:w-[350px] space-y-6">
+          <div className="sticky top-24">
+            <h2 className="text-2xl font-serif text-primary-foreground mb-6">Refinement</h2>
+            
+            <div className="space-y-6">
+              {/* Template Style */}
+              <div className="space-y-3">
+                <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">Template Style</label>
+                <Select defaultValue="silent">
+                  <SelectTrigger className="w-full bg-secondary/30 border-border/50 text-primary-foreground h-12">
+                    <SelectValue placeholder="Select template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="silent">Silent Power</SelectItem>
+                    <SelectItem value="modern">Modern Edge</SelectItem>
+                    <SelectItem value="classic">Classic Exec</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* AI Tone Adjustment */}
+              <div className="space-y-3">
+                <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">AI Tone Adjustment</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant={tone === "Executive" ? "default" : "outline"}
+                    className={`w-full ${tone === "Executive" ? 'bg-primary text-primary-foreground' : 'bg-transparent border-border/50 hover:bg-secondary/50 text-muted-foreground'}`}
+                    onClick={() => setTone("Executive")}
+                  >
+                    {tone === "Executive" && <Sparkles className="w-3 h-3 mr-2" />} Executive
+                  </Button>
+                  <Button 
+                    variant={tone === "Creative" ? "default" : "outline"}
+                    className={`w-full ${tone === "Creative" ? 'bg-primary text-primary-foreground' : 'bg-transparent border-border/50 hover:bg-secondary/50 text-muted-foreground'}`}
+                    onClick={() => setTone("Creative")}
+                  >
+                    Creative
+                  </Button>
+                  <Button 
+                    variant={tone === "Technical" ? "default" : "outline"}
+                    className={`w-full ${tone === "Technical" ? 'bg-primary text-primary-foreground' : 'bg-transparent border-border/50 hover:bg-secondary/50 text-muted-foreground'}`}
+                    onClick={() => setTone("Technical")}
+                  >
+                    Technical
+                  </Button>
+                  <Button 
+                    variant={tone === "Concise" ? "default" : "outline"}
+                    className={`w-full ${tone === "Concise" ? 'bg-primary text-primary-foreground' : 'bg-transparent border-border/50 hover:bg-secondary/50 text-muted-foreground'}`}
+                    onClick={() => setTone("Concise")}
+                  >
+                    Concise
+                  </Button>
+                </div>
+              </div>
+
+              {/* AI Recommendation */}
+              <Card className="bg-primary/10 border-primary/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-2 opacity-10">
+                  <Sparkles className="w-16 h-16 text-primary" />
+                </div>
+                <CardContent className="p-4 relative z-10">
+                  <div className="flex items-center gap-2 mb-2 text-primary font-bold text-sm">
+                    <Sparkles className="w-4 h-4" /> AI RECOMMENDATION
+                  </div>
+                  <p className="text-sm text-primary-foreground leading-relaxed">
+                    Strengthening your &quot;Nexus Dynamics&quot; impact statements could increase your callback rate by <span className="text-primary font-bold">18%</span> for Director-level roles.
+                  </p>
+                </CardContent>
+              </Card>
+
             </div>
+
+            {/* Action Buttons */}
+            <div className="mt-8 space-y-3">
+              <Button className="w-full h-14 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                <Download className="w-5 h-5 mr-2" /> Download PDF
+              </Button>
+              <Button variant="outline" className="w-full h-14 text-base font-semibold bg-transparent border-border/50 hover:bg-secondary/50 text-primary-foreground">
+                <Share2 className="w-5 h-5 mr-2" /> Share Link
+              </Button>
+            </div>
+
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
+}
+
+// Temporary icon to avoid import errors since it wasn't in the list
+function TrendingUp(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+      <polyline points="16 7 22 7 22 13" />
+    </svg>
+  )
 }

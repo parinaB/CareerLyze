@@ -1,227 +1,263 @@
 "use client";
 
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  BriefcaseIcon,
-  LineChart,
-  TrendingUp,
-  TrendingDown,
-  Brain,
-} from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
+import { 
+  Send, 
+  Settings2, 
+  Lightbulb, 
+  Zap, 
+  ArrowRight,
+  MoreHorizontal,
+  Clock,
+  Briefcase
+} from "lucide-react";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100 },
+  },
+};
 
 const DashboardView = ({ insights }) => {
-  // Transform salary data for the chart
-  const salaryData = insights.salaryRanges.map((range) => ({
-    name: range.role,
-    min: range.min / 1000,
-    max: range.max / 1000,
-    median: range.median / 1000,
-  }));
-
-  const getDemandLevelColor = (level) => {
-    switch (level.toLowerCase()) {
-      case "high":
-        return "bg-green-500";
-      case "medium":
-        return "bg-yellow-500";
-      case "low":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
-
-  const getMarketOutlookInfo = (outlook) => {
-    switch (outlook.toLowerCase()) {
-      case "positive":
-        return { icon: TrendingUp, color: "text-green-500" };
-      case "neutral":
-        return { icon: LineChart, color: "text-yellow-500" };
-      case "negative":
-        return { icon: TrendingDown, color: "text-red-500" };
-      default:
-        return { icon: LineChart, color: "text-gray-500" };
-    }
-  };
-
-  const OutlookIcon = getMarketOutlookInfo(insights.marketOutlook).icon;
-  const outlookColor = getMarketOutlookInfo(insights.marketOutlook).color;
-
-  // Format dates using date-fns
-  const lastUpdatedDate = format(new Date(insights.lastUpdated), "dd/MM/yyyy");
-  const nextUpdateDistance = formatDistanceToNow(
-    new Date(insights.nextUpdate),
-    { addSuffix: true }
-  );
-
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <Badge variant="outline">Last updated: {lastUpdatedDate}</Badge>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8 pb-10"
+    >
+      {/* Header */}
+      <div className="space-y-2 mt-4">
+        <h1 className="text-4xl font-bold tracking-tight text-primary-foreground font-serif">Welcome back, User</h1>
+        <p className="text-muted-foreground text-sm max-w-2xl">
+          Your AI career co-pilot has analyzed 12 new job opportunities matching your senior product design profile. Let&apos;s get you hired.
+        </p>
       </div>
 
-      {/* Market Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Market Outlook
-            </CardTitle>
-            <OutlookIcon className={`h-4 w-4 ${outlookColor}`} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{insights.marketOutlook}</div>
-            <p className="text-xs text-muted-foreground">
-              Next update {nextUpdateDistance}
-            </p>
-          </CardContent>
-        </Card>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div variants={itemVariants}>
+          <Card className="bg-card/50 border-border/50 backdrop-blur-sm h-full hover:border-primary/30 transition-all">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div className="p-3 bg-secondary/80 rounded-xl">
+                  <Send className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-xs font-semibold text-yellow-500">+12% vs last week</span>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-2xl font-semibold text-primary-foreground">Application Progress</h3>
+                  <p className="text-sm text-muted-foreground mt-1">4 active, 2 interviews scheduled</p>
+                </div>
+                <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full bg-primary w-[40%]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Industry Growth
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {insights.growthRate.toFixed(1)}%
-            </div>
-            <Progress value={insights.growthRate} className="mt-2" />
-          </CardContent>
-        </Card>
+        <motion.div variants={itemVariants}>
+          <Card className="bg-card/50 border-border/50 backdrop-blur-sm h-full hover:border-primary/30 transition-all relative overflow-hidden">
+            <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent" />
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div className="p-3 bg-secondary/80 rounded-xl">
+                  <Settings2 className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex items-center gap-1 bg-secondary/80 px-2 py-1 rounded-full">
+                  <span className="text-xs text-muted-foreground">AI</span>
+                  <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-black">98</div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-2xl font-semibold text-primary-foreground">Profile Strength</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Optimized for &quot;Lead Designer&quot; roles</p>
+                </div>
+                <Button variant="outline" className="w-full bg-transparent border-border/50 hover:bg-secondary/50 transition-colors">
+                  Improve Score
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Demand Level</CardTitle>
-            <BriefcaseIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{insights.demandLevel}</div>
-            <div
-              className={`h-2 w-full rounded-full mt-2 ${getDemandLevelColor(
-                insights.demandLevel
-              )}`}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Skills</CardTitle>
-            <Brain className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-1">
-              {insights.topSkills.map((skill) => (
-                <Badge key={skill} variant="secondary">
-                  {skill}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div variants={itemVariants}>
+          <Card className="bg-card/50 border-border/50 backdrop-blur-sm h-full hover:border-primary/30 transition-all relative overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div className="p-3 bg-secondary/80 rounded-xl">
+                  <Lightbulb className="w-5 h-5 text-yellow-500" />
+                </div>
+                <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground">
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-2xl font-semibold text-primary-foreground">Interview Readiness</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Top 5% for technical scenarios</p>
+                </div>
+                <div className="flex gap-2">
+                  <Badge variant="secondary" className="bg-secondary/50 hover:bg-secondary/80 text-xs">System Design</Badge>
+                  <Badge variant="secondary" className="bg-secondary/50 hover:bg-secondary/80 text-xs">UX Audit</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
-      {/* Salary Ranges Chart */}
-      <Card className="col-span-4">
-        <CardHeader>
-          <CardTitle>Salary Ranges by Role</CardTitle>
-          <CardDescription>
-            Displaying minimum, median, and maximum salaries (in thousands)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={salaryData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-background border rounded-lg p-2 shadow-md">
-                          <p className="font-medium">{label}</p>
-                          {payload.map((item) => (
-                            <p key={item.name} className="text-sm">
-                              {item.name}: ${item.value}K
-                            </p>
-                          ))}
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Bar dataKey="min" fill="#94a3b8" name="Min Salary (K)" />
-                <Bar dataKey="median" fill="#64748b" name="Median Salary (K)" />
-                <Bar dataKey="max" fill="#475569" name="Max Salary (K)" />
-              </BarChart>
-            </ResponsiveContainer>
+      {/* Bottom Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left Column - AI Insights & Activity */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-primary-foreground font-serif">AI Insights & Activity</h3>
+            <Button variant="link" className="text-primary text-sm p-0 h-auto font-medium">
+              View all <ArrowRight className="w-3 h-3 ml-1" />
+            </Button>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Industry Trends */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Key Industry Trends</CardTitle>
-            <CardDescription>
-              Current trends shaping the industry
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-4">
-              {insights.keyTrends.map((trend, index) => (
-                <li key={index} className="flex items-start space-x-2">
-                  <div className="h-2 w-2 mt-2 rounded-full bg-primary" />
-                  <span>{trend}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+          <div className="relative pl-6 space-y-4 before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-secondary">
+            
+            {/* Timeline Item 1 */}
+            <motion.div variants={itemVariants} className="relative">
+              <div className="absolute -left-6 top-5 w-2 h-2 rounded-full bg-primary ring-4 ring-background" />
+              <Card className="bg-card/50 border-border/50 hover:bg-card/80 transition-colors">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                    <span className="font-medium text-primary-foreground">2 hours ago</span>
+                    <span>•</span>
+                    <span>Resume Optimization</span>
+                  </div>
+                  <p className="text-sm text-primary-foreground leading-relaxed">
+                    AI refined your &quot;Experience&quot; section for the <span className="text-yellow-500 font-medium">Senior Designer</span> role at Google.
+                    Quantified impact metrics improved by 40%.
+                  </p>
+                  <div className="flex gap-4 mt-3">
+                    <button className="text-xs text-primary font-medium hover:underline">Compare Versions</button>
+                    <button className="text-xs text-muted-foreground font-medium hover:text-primary-foreground">Dismiss</button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommended Skills</CardTitle>
-            <CardDescription>Skills to consider developing</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {insights.recommendedSkills.map((skill) => (
-                <Badge key={skill} variant="outline">
-                  {skill}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+            {/* Timeline Item 2 */}
+            <motion.div variants={itemVariants} className="relative">
+              <div className="absolute -left-6 top-5 w-2 h-2 rounded-full bg-muted-foreground ring-4 ring-background" />
+              <Card className="bg-card/50 border-border/50 hover:bg-card/80 transition-colors">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                    <span className="font-medium text-primary-foreground">Yesterday</span>
+                    <span>•</span>
+                    <span>Interview Training</span>
+                  </div>
+                  <p className="text-sm text-primary-foreground leading-relaxed">
+                    Successfully completed a mock behavioral interview. You scored <span className="font-medium">8.5/10</span> on conflict resolution answers.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Timeline Item 3 */}
+            <motion.div variants={itemVariants} className="relative">
+              <div className="absolute -left-6 top-5 w-2 h-2 rounded-full bg-yellow-500 ring-4 ring-background shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
+              <Card className="bg-card/50 border-border/50 hover:bg-card/80 transition-colors">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-3 text-xs text-yellow-500 mb-2">
+                    <span className="font-medium">3 days ago</span>
+                    <span className="text-muted-foreground">•</span>
+                    <span className="text-muted-foreground">New Match</span>
+                  </div>
+                  <p className="text-sm text-primary-foreground leading-relaxed">
+                    New high-relevance job detected: <span className="text-primary font-medium">Staff Product Designer</span> at Anthropic. AI suggests applying before Friday.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          
+          {/* AI Catalyst */}
+          <motion.div variants={itemVariants}>
+            <Card className="bg-gradient-to-br from-card/80 to-secondary/30 border-border/50 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Zap className="w-24 h-24 text-primary" />
+              </div>
+              <CardContent className="p-6 relative z-10">
+                <h3 className="text-lg font-semibold text-primary-foreground mb-2 font-serif">AI Catalyst</h3>
+                <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                  Generate a custom cover letter based on your latest resume and the target company&apos;s culture.
+                </p>
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                  <Zap className="w-4 h-4 mr-2" /> Generate Now
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Upcoming Interviews */}
+          <motion.div variants={itemVariants}>
+            <Card className="bg-card/50 border-border/50">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xs font-bold text-muted-foreground tracking-wider uppercase">Upcoming Interviews</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="divide-y divide-border/50">
+                  <div className="p-4 flex items-center gap-4 hover:bg-secondary/20 transition-colors cursor-pointer">
+                    <div className="bg-secondary/80 rounded-lg p-2 text-center min-w-[50px]">
+                      <div className="text-[10px] text-muted-foreground uppercase font-bold">Oct</div>
+                      <div className="text-lg font-bold text-primary-foreground">12</div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary-foreground">Product Design Loop</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">Stripe • 2:00 PM</p>
+                    </div>
+                  </div>
+                  <div className="p-4 flex items-center gap-4 hover:bg-secondary/20 transition-colors cursor-pointer">
+                    <div className="bg-secondary/80 rounded-lg p-2 text-center min-w-[50px]">
+                      <div className="text-[10px] text-muted-foreground uppercase font-bold">Oct</div>
+                      <div className="text-lg font-bold text-primary-foreground">14</div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary-foreground">Coffee Chat</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">Meta • 11:30 AM</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
