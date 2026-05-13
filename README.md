@@ -200,9 +200,16 @@ npm install
 Create a .env file in the root directory.
 
 ```bash
-DATABASE_URL= <your-prisma-url>
-GEMINI_API_KEY= <your-gemini-api-key>
-NODE_ENV = production
+DATABASE_URL=<your-prisma-url>
+GEMINI_API_KEY=<your-gemini-api-key>
+INNGEST_EVENT_KEY=<your-inngest-event-key>
+INNGEST_SIGNING_KEY=<your-inngest-signing-key>
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
+CLERK_SECRET_KEY=<your-clerk-secret-key>
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 ```
 
 ---
