@@ -156,42 +156,49 @@ npm install
 
 # 🔐 Environment Variables Setup
 
-This project requires API keys and database credentials.
-
-Create a file named:
+Create a `.env` file in the root directory of the project.
 
 ```bash
-.env
+touch .env
 ```
 
-inside the root directory.
-
----
-
-# 📄 Required Environment Variables
+Add the following variables:
 
 ```env
-DATABASE_URL=
-GEMINI_API_KEY=
+DATABASE_URL=<your-prisma-url>
+
+GEMINI_API_KEY=<your-gemini-api-key>
+
+INNGEST_EVENT_KEY=<your-inngest-event-key>
+INNGEST_SIGNING_KEY=<your-inngest-signing-key>
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
+CLERK_SECRET_KEY=<your-clerk-secret-key>
+
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 ```
 
 ---
 
-# 🧩 How to Get These Environment Variables
+# 📄 Detailed Environment Variables Guide
 
-## 1️⃣ DATABASE_URL (NeonDB)
+## 1️⃣ DATABASE_URL
 
-### Steps:
+Used by:
+- Prisma ORM
+- NeonDB PostgreSQL database connection
 
-1. Go to:
+### How to Get It
 
-   [NeonDB Official Website](https://neon.tech?utm_source=chatgpt.com)
+1. Visit:   https://neon.tech
 
 2. Create an account
-
 3. Create a new PostgreSQL project
-
-4. Copy the connection string
+4. Open the project dashboard
+5. Copy the PostgreSQL connection string
 
 Example:
 
@@ -203,69 +210,166 @@ DATABASE_URL="postgresql://username:password@host/dbname?sslmode=require"
 
 ## 2️⃣ GEMINI_API_KEY
 
-### Steps:
+Used for:
+- AI resume generation
+- Cover letter generation
+- Interview question generation
+- Career insights AI engine
 
-1. Visit:
+### How to Get It
 
-   [Google AI Studio](https://aistudio.google.com/app/apikey?utm_source=chatgpt.com)
+1. Visit:  https://aistudio.google.com/app/apikey
 
-2. Login with Google account
-
-3. Create API key
-
-4. Copy the generated API key
+2. Login with your Google account
+3. Click **Create API Key**
+4. Copy the generated key
 
 Example:
 
 ```env
-GEMINI_API_KEY="your_api_key_here"
+GEMINI_API_KEY="AIzaSyXXXXXXX"
 ```
 
 ---
 
-# 🗄️ Database Setup
+## 3️⃣ INNGEST_EVENT_KEY
 
-After setting up environment variables:
+Used for:
+- Background workflows
+- Event-driven functions
+- Async AI processing
 
-## Generate Prisma Client
+---
 
-```bash
-npx prisma generate
+## 4️⃣ INNGEST_SIGNING_KEY
+
+Used for:
+- Secure validation of Inngest events
+
+### How to Get Both Inngest Keys
+
+1. Visit:  https://www.inngest.com/
+
+2. Create an account
+3. Create a new app/project
+4. Open the app dashboard
+5. Navigate to:
+   
+   Settings → Keys
+
+6. Copy:
+- Event Key
+- Signing Key
+
+Example:
+
+```env
+INNGEST_EVENT_KEY="evt_xxxxxxxxx"
+INNGEST_SIGNING_KEY="signkey_xxxxxxxxx"
 ```
 
 ---
 
-## Push Database Schema
+# 🔐 Clerk Authentication Setup
 
-```bash
-npx prisma db push
+The project uses Clerk for:
+- Authentication
+- User management
+- Sign in / Sign up flows
+
+---
+
+## 5️⃣ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+Public frontend authentication key.
+
+---
+
+## 6️⃣ CLERK_SECRET_KEY
+
+Private backend secret key.
+
+### How to Get Clerk Keys
+
+1. Visit:  https://clerk.com/
+
+2. Create an account
+3. Create a new application
+4. Go to:
+   
+   API Keys section
+
+5. Copy:
+- Publishable Key
+- Secret Key
+
+Example:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_xxxxx"
+CLERK_SECRET_KEY="sk_test_xxxxx"
 ```
 
 ---
 
-## (Optional) Open Prisma Studio
+# 🔗 Clerk Redirect URLs
 
-```bash
-npx prisma studio
+These control authentication routing behavior.
+
+```env
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
+```
+
+### Purpose
+
+| Variable | Purpose |
+|---|---|
+| NEXT_PUBLIC_CLERK_SIGN_IN_URL | Sign in route |
+| NEXT_PUBLIC_CLERK_SIGN_UP_URL | Sign up route |
+| NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL | Redirect after login |
+| NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL | Redirect after signup |
+
+---
+
+# ⚠️ Important Security Notes
+
+## ❌ Never Do This
+
+- Never commit `.env` files to GitHub
+- Never expose secret keys publicly
+- Never share API keys in issues or PRs
+
+---
+
+# ✅ Add `.env` to `.gitignore`
+
+Make sure this exists inside `.gitignore`:
+
+```gitignore
+.env
 ```
 
 ---
 
-# ▶️ Running the Project
+# 🧪 Verify Environment Variables
 
-Start the development server:
+After setup, run:
 
 ```bash
 npm run dev
 ```
 
-Visit:
-
-```text
-http://localhost:3000
-```
+If setup is successful:
+- Database connects properly
+- Authentication works
+- AI generation functions work
+- Inngest background jobs initialize successfully
 
 ---
+
 
 # 🔄 Contribution Workflow
 
