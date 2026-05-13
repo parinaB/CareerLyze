@@ -242,7 +242,7 @@ Issues are categorized using labels like:
 
 Before contributing, please read:
 
-📄 **CONTRIBUTING.md** for detailed contribution rules and workflow.
+📄 [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution rules and workflow.
 
 ## Quick Rules
 
@@ -314,7 +314,7 @@ New contributors can start with:
 
 This project is licensed under the **MIT License**.
 
-📄 See the `LICENSE` file for more details.
+📄 See the [LICENSE](LICENSE) file for more details.
 
 ---
 
