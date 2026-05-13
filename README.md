@@ -195,8 +195,19 @@ npm install
 
 ---
 
+## 4️⃣ Setup Environment Variables
 
-## 4️⃣ Run the Development Server
+Create a .env file in the root directory.
+
+```bash
+DATABASE_URL= <your-prisma-url>
+GEMINI_API_KEY= <your-gemini-api-key>
+NODE_ENV = production
+```
+
+---
+
+## 5️⃣ Run the Development Server
 
 ```bash
 npm run dev
