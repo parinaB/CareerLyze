@@ -352,3 +352,9 @@ If you found this project helpful:
 
 
 
+
+
+## GSSOC '26 Contributions
+- UI Overhaul with Premium Navy/Slate aesthetic.
+- Responsive Dashboard with Framer Motion animations.
+- Integrated ShadCN components for enhanced UX.
