@@ -57,7 +57,7 @@ export async function generateQuiz() {
   }
 }
 
-export async function saveQuizResult(questions, answers, score) {
+export async function saveQuizResult(questions, answers) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
@@ -74,6 +74,10 @@ export async function saveQuizResult(questions, answers, score) {
     isCorrect: q.correctAnswer === answers[index],
     explanation: q.explanation,
   }));
+
+  // Calculate score on the server — never trust the client-provided score
+  const correctCount = questionResults.filter((q) => q.isCorrect).length;
+  const score = (correctCount / questionResults.length) * 100;
 
   // Get wrong answers
   const wrongAnswers = questionResults.filter((q) => !q.isCorrect);
