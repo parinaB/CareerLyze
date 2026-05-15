@@ -27,15 +27,15 @@ export default function ATSScore({ content }) {
   };
 
   const getColor = (score) => {
-    if (score >= 75) return "text-emerald-600 dark:text-emerald-400";
-    if (score >= 50) return "text-amber-600 dark:text-amber-400";
-    return "text-rose-600 dark:text-rose-400";
+    if (score >= 75) return "text-primary";
+    if (score >= 50) return "text-secondary";
+    return "text-destructive";
   };
 
   const getBarColor = (score) => {
-    if (score >= 75) return "bg-emerald-600 dark:bg-emerald-400";
-    if (score >= 50) return "bg-amber-600 dark:bg-amber-400";
-    return "bg-rose-600 dark:bg-rose-400";
+    if (score >= 75) return "bg-primary";
+    if (score >= 50) return "bg-secondary";
+    return "bg-destructive";
   };
 
   return (
@@ -43,7 +43,7 @@ export default function ATSScore({ content }) {
       <Button
         onClick={handleCheck}
         disabled={loading || !content}
-        className="w-full h-10 sm:h-14 text-xs sm:text-base font-semibold bg-primary hover:bg-primary/90 dark:bg-secondary/50 dark:hover:bg-secondary/80 text-primary-foreground dark:border dark:border-border/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-shadow duration-300"
+        className="w-full h-10 sm:h-14 text-xs sm:text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground border border-transparent hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-shadow duration-300"
       >
         {loading ? (
           <>
@@ -57,17 +57,17 @@ export default function ATSScore({ content }) {
       </Button>
 
       {error && (
-        <p className="text-xs text-red-400 text-center">{error}</p>
+        <p className="text-xs text-destructive text-center">{error}</p>
       )}
 
       {result && (
         <Card className="bg-secondary/20 border-border/50">
           <CardContent className="p-3 sm:p-4 space-y-3">
             <div className="flex items-center justify-between cursor-pointer group" onClick={() => setIsExpanded(!isExpanded)}>
-              <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase dark:text-slate-300 group-hover:text-foreground transition-colors">ATS Score</span>
+              <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase group-hover:text-foreground transition-colors">ATS Score</span>
               <div className="flex items-center gap-2">
                 <span className={`text-2xl font-bold ${getColor(result.score)}`}>
-                  {result.score}<span className="text-sm text-muted-foreground dark:text-slate-400">/100</span>
+                  {result.score}<span className="text-sm text-muted-foreground">/100</span>
                 </span>
                 <div className="w-6 h-6 ml-1 text-muted-foreground flex items-center justify-center">
                   {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -87,10 +87,10 @@ export default function ATSScore({ content }) {
                   {result.label}
                 </p>
                 <div className="space-y-1.5 pt-1">
-                  <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase dark:text-slate-300">Suggestions</p>
+                  <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">Suggestions</p>
                   <ul className="space-y-1.5">
                     {result.suggestions.map((tip, i) => (
-                      <li key={i} className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
+                      <li key={i} className="text-xs text-foreground leading-relaxed flex gap-2">
                         <span className="text-primary mt-0.5">•</span>
                         <span>{tip}</span>
                       </li>

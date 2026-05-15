@@ -64,7 +64,7 @@ export default function SkillAnalyticsPage() {
                 <PolarGrid stroke="#334155" />
                 <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar name="Skills" dataKey="A" stroke="#f97316" fill="#f97316" fillOpacity={0.4} />
+                <Radar name="Skills" dataKey="A" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.4} />
               </RadarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -86,8 +86,8 @@ export default function SkillAnalyticsPage() {
                   cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
                   contentStyle={{ backgroundColor: '#1e1e2e', borderColor: '#334155', borderRadius: '8px' }}
                 />
-                <Bar dataKey="current" name="Your Level" fill="#eab308" radius={[0, 4, 4, 0]} barSize={12} />
-                <Bar dataKey="required" name="Required Level" fill="#22c55e" radius={[0, 4, 4, 0]} barSize={12} />
+                <Bar dataKey="current" name="Your Level" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={12} />
+                <Bar dataKey="required" name="Required Level" fill="hsl(var(--secondary))" radius={[0, 4, 4, 0]} barSize={12} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -101,13 +101,13 @@ export default function SkillAnalyticsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all cursor-pointer">
             <CardContent className="p-5">
-              <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center mb-4">
-                <Brain className="w-5 h-5 text-orange-500" />
+              <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
+                <Brain className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-bold text-foreground mb-2">Grokking the System Design Interview</h3>
               <p className="text-xs text-muted-foreground mb-4">Master scalable architectures for technical PM rounds.</p>
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-xs border-orange-500/30 text-orange-500 dark:text-orange-400">High Priority</Badge>
+                <Badge variant="outline" className="text-xs border-primary/30 text-primary">High Priority</Badge>
                 <span className="text-xs text-muted-foreground">4 weeks</span>
               </div>
             </CardContent>
@@ -115,13 +115,13 @@ export default function SkillAnalyticsPage() {
           
           <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all cursor-pointer">
             <CardContent className="p-5">
-              <div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center mb-4">
-                <Target className="w-5 h-5 text-yellow-500" />
+              <div className="w-10 h-10 rounded-lg bg-secondary/20 flex items-center justify-center mb-4">
+                <Target className="w-5 h-5 text-secondary" />
               </div>
               <h3 className="font-bold text-foreground mb-2">Advanced Product Experimentation</h3>
               <p className="text-xs text-muted-foreground mb-4">Deep dive into A/B testing and statistical significance.</p>
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-xs border-yellow-500/30 text-yellow-600 dark:text-yellow-400">Medium Priority</Badge>
+                <Badge variant="outline" className="text-xs border-secondary/30 text-secondary">Medium Priority</Badge>
                 <span className="text-xs text-muted-foreground">2 weeks</span>
               </div>
             </CardContent>
@@ -129,13 +129,13 @@ export default function SkillAnalyticsPage() {
 
           <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all cursor-pointer">
             <CardContent className="p-5">
-              <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center mb-4">
-                <TrendingUp className="w-5 h-5 text-green-500" />
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4">
+                <TrendingUp className="w-5 h-5 text-foreground" />
               </div>
               <h3 className="font-bold text-foreground mb-2">SQL for Data Science</h3>
               <p className="text-xs text-muted-foreground mb-4">Learn advanced queries for autonomous data extraction.</p>
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-xs border-green-500/30 text-green-600 dark:text-green-400">Recommended</Badge>
+                <Badge variant="outline" className="text-xs border-border text-foreground">Recommended</Badge>
                 <span className="text-xs text-muted-foreground">3 weeks</span>
               </div>
             </CardContent>

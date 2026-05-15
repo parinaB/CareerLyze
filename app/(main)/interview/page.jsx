@@ -28,7 +28,7 @@ export default function MockInterviewPage() {
         {/* Intelligence Hub */}
         <Card className="bg-card/80 backdrop-blur-md border-border/50 shadow-2xl">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 text-yellow-500 font-bold text-sm mb-3">
+            <div className="flex items-center gap-2 text-secondary font-bold text-sm mb-3">
               <LineChart className="w-4 h-4" /> Intelligence Hub
             </div>
             
@@ -38,7 +38,7 @@ export default function MockInterviewPage() {
                   CURRENT CONFIDENCE
                 </div>
                 <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500 w-[70%]" />
+                  <div className="h-full bg-secondary w-[70%]" />
                 </div>
               </div>
 
@@ -131,11 +131,11 @@ export default function MockInterviewPage() {
               
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-card/50 p-3 rounded-lg border border-border/50">
-                  <div className="text-[10px] text-yellow-500 font-bold uppercase mb-1 tracking-wider">Strategy</div>
+                  <div className="text-[10px] text-secondary font-bold uppercase mb-1 tracking-wider">Strategy</div>
                   <div className="font-semibold text-foreground">Practice STAR Method</div>
                 </div>
                 <div className="bg-card/50 p-3 rounded-lg border border-border/50">
-                  <div className="text-[10px] text-cyan-500 font-bold uppercase mb-1 tracking-wider">Analysis</div>
+                  <div className="text-[10px] text-primary font-bold uppercase mb-1 tracking-wider">Analysis</div>
                   <div className="font-semibold text-foreground">Review Tech Stack</div>
                 </div>
               </div>

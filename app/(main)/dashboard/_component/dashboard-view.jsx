@@ -61,7 +61,7 @@ const DashboardView = ({ insights }) => {
                 <div className="p-3 bg-secondary/80 rounded-xl">
                   <Send className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-xs font-semibold text-yellow-500">+12% vs last week</span>
+                <span className="text-xs font-semibold text-secondary">+12% vs last week</span>
               </div>
               <div className="space-y-4">
                 <div>
@@ -78,7 +78,7 @@ const DashboardView = ({ insights }) => {
 
         <motion.div variants={itemVariants}>
           <Card className="bg-card/50 border-border/50 backdrop-blur-sm h-full hover:border-primary/30 transition-all relative overflow-hidden">
-            <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent" />
+            <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-6">
                 <div className="p-3 bg-secondary/80 rounded-xl">
@@ -107,7 +107,7 @@ const DashboardView = ({ insights }) => {
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-6">
                 <div className="p-3 bg-secondary/80 rounded-xl">
-                  <Lightbulb className="w-5 h-5 text-yellow-500" />
+                  <Lightbulb className="w-5 h-5 text-secondary" />
                 </div>
                 <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground">
                   <MoreHorizontal className="w-4 h-4" />
@@ -153,7 +153,7 @@ const DashboardView = ({ insights }) => {
                     <span>Resume Optimization</span>
                   </div>
                   <p className="text-sm text-foreground leading-relaxed">
-                    AI refined your &quot;Experience&quot; section for the <span className="text-yellow-500 font-medium">Senior Designer</span> role at Google.
+                    AI refined your &quot;Experience&quot; section for the <span className="text-primary font-medium">Senior Designer</span> role at Google.
                     Quantified impact metrics improved by 40%.
                   </p>
                   <div className="flex gap-4 mt-3">
@@ -183,10 +183,10 @@ const DashboardView = ({ insights }) => {
 
             {/* Timeline Item 3 */}
             <motion.div variants={itemVariants} className="relative">
-              <div className="absolute -left-6 top-5 w-2 h-2 rounded-full bg-yellow-500 ring-4 ring-background shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
+              <div className="absolute -left-6 top-5 w-2 h-2 rounded-full bg-secondary ring-4 ring-background" />
               <Card className="bg-card/50 border-border/50 hover:bg-card/80 transition-colors">
                 <CardContent className="p-5">
-                  <div className="flex items-center gap-3 text-xs text-yellow-500 mb-2">
+                  <div className="flex items-center gap-3 text-xs text-secondary mb-2">
                     <span className="font-medium">3 days ago</span>
                     <span className="text-muted-foreground">•</span>
                     <span className="text-muted-foreground">New Match</span>
