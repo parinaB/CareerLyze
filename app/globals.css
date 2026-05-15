@@ -128,4 +128,20 @@ body {
   .text-secondary {
     color: hsl(var(--foreground) / 0.60);
   }
+
+  /* Responsive overflow prevention */
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+
+  /* Responsive padding utilities */
+  @media (max-width: 640px) {
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+  }
+
+  /* Ensure resume preview container doesn't overflow on ultra-small screens */
+  @media (max-width: 360px) {
+    body { font-size: 14px; }
+  }
 }
